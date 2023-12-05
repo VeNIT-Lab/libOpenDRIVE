@@ -18,6 +18,8 @@ else()
     set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 endif()
 
+find_package(pugixml REQUIRED)
+
 set(SOURCES 
     src/Geometries/Arc.cpp
     src/Geometries/CubicSpline.cpp
@@ -38,10 +40,12 @@ set(SOURCES
     src/RoadObject.cpp
     src/RoadSignal.cpp
     src/RoutingGraph.cpp
-    thirdparty/pugixml/pugixml.cpp
 )
 
 add_library(OpenDrive ${SOURCES})
+
+target_link_libraries(OpenDrive PUBLIC pugixml)
+
 target_include_directories(OpenDrive
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>
@@ -50,17 +54,7 @@ target_include_directories(OpenDrive
 add_executable(test-xodr test.cpp)
 target_link_libraries(test-xodr OpenDrive)
 
-install(
-    TARGETS OpenDrive test-xodr
-    INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/ DESTINATION "include")
-install(FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/pugixml/pugixml.hpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/pugixml/pugiconfig.hpp DESTINATION "include/pugixml/")
 
 install(TARGETS OpenDrive EXPORT OpenDriveConfig)
 install(EXPORT OpenDriveConfig NAMESPACE OpenDrive:: DESTINATION cmake)
