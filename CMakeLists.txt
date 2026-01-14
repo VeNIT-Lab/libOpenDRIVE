@@ -18,7 +18,9 @@ else()
     set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 endif()
 
-find_package(pugixml REQUIRED)
+if(NOT TARGET pugixml)
+    find_package(pugixml REQUIRED)
+endif()
 
 set(SOURCES 
     src/Geometries/Arc.cpp
